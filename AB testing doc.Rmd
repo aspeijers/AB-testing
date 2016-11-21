@@ -1,0 +1,58 @@
+---
+title: "A/B Testing (aka Hypothesis Testing)"
+author: "Anneke Speijers"
+date: "11/17/2016"
+output: html_document
+sansfont: Roboto
+documentclass: article
+---
+
+A/B testing is a form of statistical hypothesis testing whereby a randomised experiment is carried out to determine whether a difference exists between two variants - a control (A) and a treatment (B).  
+
+Consider the conversion rate (CR) for a particular webpage. Say, a new design for this page is proposed and we need to know whether it will increase the current CR or not. Running an A/B test is often a good way to determine this. 
+  
+But how many samples do we need to get a statistically significant result? First let's look at how to model the CR statistically.
+
+
+### Modeling user behaviour using distributions
+
+Each visitor to a page either converts or doesn't. So their behaviour follows a bernoulli distribution with probablity of conversion, p. Let $X_i$ represent the behaviour of visitor i. $X_i=1$ if the visitor converts and $X_i=0$ if the visitor does not convert. 
+
+$$X_i \sim Bernoulli(p)$$
+
+Say we have n visitors to the page. Assuming the behaviour of each visitor is independent and identically distributed, their overall behaviour is just the sum of each individual's behaviour. This, by definition, is a binomial distribution.
+
+$$\sum_{i=1}^n X_i \sim Binomial(n,p)$$
+
+This models the total conversions. To transform this to the CR we simply need to divide by the total number of visitors:
+
+$$Y \sim \frac{1}{n} Binomial(n,p)$$
+
+The mean and variance of Y are then:
+
+$\mu_Y = \frac{np}{n} = p$
+
+$\sigma^2_Y = \frac{np(1-p)}{n^2} = \frac{p(1-p)}{n}$
+
+
+The Central Limit Theorem tells us that the sum of independently and identically distributed random variables tends to a normal distribution as n goes to infinity. (fix this explanation up!)
+
+$$Z = \frac{Y-\mu_Y}{\sigma_Y} \xrightarrow{d} N(0,1)$$
+
+Or alternatively,
+$$Y \xrightarrow{d} N(\mu_Y, \sigma^2_Y) = N(p, \frac{p(1-p)}{n})$$
+
+### One-sided test
+
+The null hypothesis in this case, is that no difference exists between the existing control and the treatment
+
+```{r}
+
+```
+
+
+```{r, echo=FALSE}
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
