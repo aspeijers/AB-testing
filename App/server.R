@@ -11,12 +11,12 @@ shinyServer(function(input, output, session) {
     
     # generate data for Control
     x1_dens <- reactive({
-        density( rnorm(n=n(), mean=input$p1/100, sd=sqrt(n()*input$p1/100*(1-input$p1/100) )/n()) )
+        density( rnorm(n=10^6, mean=input$p1/100, sd=sqrt(n()*input$p1/100*(1-input$p1/100) )/n()) )
     })
     
     # generate data for Treatment
     x2_dens <- reactive({
-        density( rnorm(n=n(), mean=input$p2/100, sd=sqrt(n()*input$p2/100*(1-input$p2/100) )/n()) )
+        density( rnorm(n=10^6, mean=input$p2/100, sd=sqrt(n()*input$p2/100*(1-input$p2/100) )/n()) )
     })
 
     # combine data into dataframe
