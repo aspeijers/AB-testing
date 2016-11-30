@@ -2,26 +2,27 @@
 library(ggplot2)
 
 # default values
-p1    <- 0.4
-p2    <- 0.45
+p1    <- 0.05
+p2    <- 0.1
 signif <- 0.05
-beta_err <- 0.2
-#n     <- 10^4
+beta_err <- 0.8
+n     <- 5000
+
 
 # calculate missing parameter: sample size, alpha or beta
 # (take difference in CR to always be defined)
 if (!exists("beta_err")) {
     # calculate beta/power
     cat("calculating beta...", "\n")
-    beta_err <- pnorm( (p1 - p2 + qnorm(1-signif)*sqrt(p1*(1-p1)/n)) * sqrt(n/(p2*(1-p2))) )
+    beta_err <- pnorm( (p1 - p2 + qnorm(1-signif)*sqrt(2*p1*(1-p1)/n)) * sqrt(n/(p1*(1-p1) +p2*(1-p2))) )
 } else if (!exists("signif")) {
     # calculate alpha
     cat("calculating alpha...", "\n")
-    signif <- 1 - pnorm( (p2 - p1 + qnorm(beta)*sqrt(p2*(1-p2)/n)) * sqrt(n/(p1*(1-p1))) )
+    signif <- 1 - pnorm( (p2 - p1 + qnorm(beta_err)*sqrt((p1*(1-p1) +p2*(1-p2))/n)) * sqrt(n/(2*p1*(1-p1))) )
 } else if (!exists("n")) {
     # calculate sample size
     cat("calculating sample size...", "\n")
-    n <- ( qnorm(1-signif)*sqrt(p1*(1-p1)) - qnorm(beta_err)*sqrt(p2*(1-p2)))^2 / (p2-p1)^2
+    n <- ( qnorm(1-signif)*sqrt(2*p1*(1-p1)) - qnorm(beta_err)*sqrt(p1*(1-p1)+p2*(1-p2)))^2 / (p2-p1)^2
 } else {
     cat("all parameters defined")
 } 
@@ -37,8 +38,8 @@ sd_B <- sqrt( n*p2*(1-p2) )/n
 
 
 # generate data from distributions and estimate kernel densities
-x1 <- rnorm( n=n, mean=mu_A, sd=sd_A )
-x2 <- rnorm( n=n, mean=mu_B, sd=sd_B )
+x1 <- rnorm( n=n, mean=mu_A, sd=sd_A ) - p1
+x2 <- rnorm( n=n, mean=mu_B, sd=sd_B ) - p1
 
 x1_dens <- density(x1)
 x2_dens <- density(x2)

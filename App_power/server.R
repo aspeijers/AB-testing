@@ -4,30 +4,31 @@ if (!require("ggplot2")) install.packages("ggplot2"); library(ggplot2)
 shinyServer(function(input, output, session) {
     
     # calc sample size
-    n <- reactive({
-        ( qnorm(1-input$signif/100)*sqrt(input$p1/100*(1-input$p1/100)) - 
-              qnorm(1-input$rel/100)*sqrt(input$p2/100*(1-input$p2/100)))^2 / (input$p2/100-input$p1/100)^2
+    rel <- reactive({
+        
+        1 - pnorm( (input$p1/100 - input$p2/100 + qnorm(1-input$signif/100)*sqrt(input$p1/100*(1-input$p1/100)/input$n)) 
+               * sqrt(input$n/(input$p2/100*(1-input$p2/100))) )
     })
     
     # generate data for Control
     x1_dens <- reactive({
-        density( rnorm(n=10^6, mean=input$p1/100, sd=sqrt(n()*input$p1/100*(1-input$p1/100) )/n()) - input$p1/100)
+        density( rnorm(n=10^6, mean=input$p1/100, sd=sqrt(input$n*input$p1/100*(1-input$p1/100) )/input$n) - input$p1/100)
     })
     
     # generate data for Treatment
     x2_dens <- reactive({
-        density( rnorm(n=10^6, mean=input$p2/100, sd=sqrt(n()*input$p2/100*(1-input$p2/100) )/n()) - input$p1/100)
+        density( rnorm(n=10^6, mean=input$p2/100, sd=sqrt(input$n*input$p2/100*(1-input$p2/100) )/input$n) - input$p1/100)
     })
 
     # combine data into dataframe
     dist <- reactive({
-        as.data.frame( cbind(x1_dens()$x, x1_dens()$y/n(), x2_dens()$x, x2_dens()$y/n()) )
+        as.data.frame( cbind(x1_dens()$x, x1_dens()$y/input$n, x2_dens()$x, x2_dens()$y/input$n) )
     })
     
     # calc intersections for alpha and beta
-    int_x <- reactive({ qnorm(p=(1-input$signif/100), mean=input$p1/100, sd=sqrt(n()*input$p1/100*(1-input$p1/100))/n()) - input$p1/100})
-    int_y <- reactive({ dnorm(x=int_x(), mean=input$p1/100, sd=sqrt(n()*input$p1/100*(1-input$p1/100) )/n()) /n() })
-    int_y_B <- reactive({ dnorm(x=int_x(), mean=input$p2/100, sd=sqrt(n()*input$p2/100*(1-input$p2/100) )/n()) /n() })
+    int_x <- reactive({ qnorm(p=(1-input$signif/100), mean=input$p1/100, sd=sqrt(input$n*input$p1/100*(1-input$p1/100))/input$n) - input$p1/100})
+    int_y <- reactive({ dnorm(x=int_x(), mean=input$p1/100, sd=sqrt(input$n*input$p1/100*(1-input$p1/100) )/input$n) /input$n })
+    int_y_B <- reactive({ dnorm(x=int_x(), mean=input$p2/100, sd=sqrt(input$n*input$p2/100*(1-input$p2/100) )/input$n) /input$n })
     
     # define shaded areas
     shaded <- reactive({
@@ -50,8 +51,8 @@ shinyServer(function(input, output, session) {
             geom_polygon(data=shaded()[[2]], aes(x=V3, y=V4, fill="beta"), alpha=0.3) +
             labs(x="Conversion Rate (CR)", y="Density") +
             annotate("text", x=(input$p2 - input$p1)/100, y=max(int_y(), int_y_B())/3, label = paste0("significance = ", round(input$signif/100,2)), col="red") +
-            annotate("text", x=0, y=max(int_y(), int_y_B())/3, label = paste0("beta = ", round(1-input$rel/100,2)), col="blue") +
-            annotate("text", x=Inf, y=Inf, hjust=1.2, vjust=1.2, label=paste(round(n(),0), "samples"), size=8) +
+            annotate("text", x=0, y=max(int_y(), int_y_B())/3, label = paste0("beta = ", round(1-rel(),2)), col="blue") +
+            annotate("text", x=Inf, y=Inf, hjust=1.2, vjust=1.2, label=paste0("reliability = ", round(rel(),2)), size=8) +
             scale_colour_manual(name = "Distributions",
                                 breaks = c("version_a", "version_b"),
                                 values = c('red', 'blue'),

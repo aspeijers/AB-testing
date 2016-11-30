@@ -42,9 +42,34 @@ $$Z = \frac{Y-\mu_Y}{\sigma_Y} \xrightarrow{d} N(0,1)$$
 Or alternatively,
 $$Y \xrightarrow{d} N(\mu_Y, \sigma^2_Y) = N(p, \frac{p(1-p)}{n})$$
 
-### One-sided test
+Let us call the distribution for behaviour on the control page $Y_A$ and the distribution for behaviour on the treatment page $Y_B$. 
 
-The null hypothesis in this case, is that no difference exists between the existing control and the treatment
+$$Y_A \sim N(p_A, \frac{p_A(1-p_A)}{n_A})$$
+
+$$Y_B \sim N(p_B, \frac{p_B(1-p_B)}{n_B})$$
+
+We can then look at the difference between these two distributions. Remember! - the difference between two normally distributed random variables, is a normally distributed random variable. 
+
+$$Y_A - Y_B \sim N(p_B-p_A, \frac{p_A(1-p_A)}{n_A} + \frac{p_B(1-p_B)}{n_B})$$
+
+
+### One sided test - null and alternative hypotheses
+
+The null hypothesis $(H_0)$ in this case, is that no difference exists between the existing control and the treatment. That is that $p_A=p_B$. 
+
+$$Y_{H_0} \sim N(0, 2\frac{p_A(1-p_A)}{n_A})$$
+
+The alternative hypothesis $H_{Alt}$, is that a difference exists. Note that we assume $n_A = n_B$. 
+
+$$Y_{H_{Alt}} \sim N(p_B-p_A, \frac{p_A(1-p_A) + p_B(1-p_B)}{n_A})$$
+
+#### Errors
+There are two types of errors that can be encountered during hypothesis testing; type I and type II.
+
+**Type I**: $H_0$ is rejected when in fact it is true. That is, there appears to be a difference in the conversion rates, when in fact no difference exists. This error is characterised by the **significance**, $\alpha$, of the test. Typical values for $\alpha$ are 0.05, 0.01 and 0.001. $(1-\alpha)$ is refered to as the **reliability**. 
+
+**Type II**: $H_0$ is not rejected when in fact it is not true. That is, there appears to be no difference in the conversion rates, when in fact a difference exists. This error is characterised by the **power**, $(1-\beta)$, of the test, which reflects the opposite of this, ie the probability of rejecting the $H_0$ when it is not true. A typical value for $\beta$ is 0.2. 
+
 
 ```{r}
 
@@ -55,4 +80,3 @@ The null hypothesis in this case, is that no difference exists between the exist
 
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

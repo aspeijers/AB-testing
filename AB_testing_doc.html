@@ -85,11 +85,24 @@ img {
 <p>The Central Limit Theorem tells us that the sum of independently and identically distributed random variables tends to a normal distribution as n goes to infinity. (fix this explanation up!)</p>
 <p><span class="math">\[Z = \frac{Y-\mu_Y}{\sigma_Y} \xrightarrow{d} N(0,1)\]</span></p>
 <p>Or alternatively, <span class="math">\[Y \xrightarrow{d} N(\mu_Y, \sigma^2_Y) = N(p, \frac{p(1-p)}{n})\]</span></p>
+<p>Let us call the distribution for behaviour on the control page <span class="math">\(Y_A\)</span> and the distribution for behaviour on the treatment page <span class="math">\(Y_B\)</span>.</p>
+<p><span class="math">\[Y_A \sim N(p_A, \frac{p_A(1-p_A)}{n_A})\]</span></p>
+<p><span class="math">\[Y_B \sim N(p_B, \frac{p_B(1-p_B)}{n_B})\]</span></p>
+<p>We can then look at the difference between these two distributions. Remember! - the difference between two normally distributed random variables, is a normally distributed random variable.</p>
+<p><span class="math">\[Y_A - Y_B \sim N(p_B-p_A, \frac{p_A(1-p_A)}{n_A} + \frac{p_B(1-p_B)}{n_B})\]</span></p>
 </div>
-<div id="one-sided-test" class="section level3">
-<h3>One-sided test</h3>
-<p>The null hypothesis in this case, is that no difference exists between the existing control and the treatment</p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+<div id="one-sided-test---null-and-alternative-hypotheses" class="section level3">
+<h3>One sided test - null and alternative hypotheses</h3>
+<p>The null hypothesis <span class="math">\((H_0)\)</span> in this case, is that no difference exists between the existing control and the treatment. That is that <span class="math">\(p_A=p_B\)</span>.</p>
+<p><span class="math">\[Y_{H_0} \sim N(0, 2\frac{p_A(1-p_A)}{n_A})\]</span></p>
+<p>The alternative hypothesis <span class="math">\(H_{Alt}\)</span>, is that a difference exists. Note that we assume <span class="math">\(n_A = n_B\)</span>.</p>
+<p><span class="math">\[Y_{H_{Alt}} \sim N(p_B-p_A, \frac{p_A(1-p_A) + p_B(1-p_B)}{n_A})\]</span></p>
+<div id="errors" class="section level4">
+<h4>Errors</h4>
+<p>There are two types of errors that can be encountered during hypothesis testing; type I and type II.</p>
+<p><strong>Type I</strong>: <span class="math">\(H_0\)</span> is rejected when in fact it is true. That is, there appears to be a difference in the conversion rates, when in fact no difference exists. This error is characterised by the <strong>significance</strong>, <span class="math">\(\alpha\)</span>, of the test. Typical values for <span class="math">\(\alpha\)</span> are 0.05, 0.01 and 0.001. <span class="math">\((1-\alpha)\)</span> is refered to as the <strong>reliability</strong>.</p>
+<p><strong>Type II</strong>: <span class="math">\(H_0\)</span> is not rejected when in fact it is not true. That is, there appears to be no difference in the conversion rates, when in fact a difference exists. This error is characterised by the <strong>power</strong>, <span class="math">\((1-\beta)\)</span>, of the test, which reflects the opposite of this, ie the probability of rejecting the <span class="math">\(H_0\)</span> when it is not true. A typical value for <span class="math">\(\beta\)</span> is 0.2.</p>
+</div>
 </div>
 
 
